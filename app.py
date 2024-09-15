@@ -43,10 +43,10 @@ if "rag_sources" not in st.session_state:
     st.session_state.rag_sources = []
 
 if "messages" not in st.session_state:
-    st.session_state.messages = [{
-        "role": "assistant", 
-        "content": "Hi there! How can I assist you today?"
-    }]
+    st.session_state.messages = [
+        {"role": "user", "content": "Hello"},
+        {"role": "assistant", "content": "Hi there! How can I assist you today?"}
+]
 
 
 # --- Side Bar LLM API Tokens ---
