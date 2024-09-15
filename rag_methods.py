@@ -101,7 +101,7 @@ def load_url_to_db():
 def initialize_vector_db(docs):
     vector_db = Chroma.from_documents(
         documents=docs,
-        embedding=OpenAIEmbeddings(),
+        embedding=OpenAIEmbeddings(api_key=st.session_state.openai_api_key),
         collection_name=f"{str(time()).replace('.', '')[:14]}_" + st.session_state['session_id'],
     )
 

@@ -57,6 +57,7 @@ with st.sidebar:
             "Introduce your OpenAI API Key (https://platform.openai.com/)", 
             value=default_openai_api_key, 
             type="password",
+            key="openai_api_key",
         )
 
     default_anthropic_api_key = os.getenv("ANTHROPIC_API_KEY") if os.getenv("ANTHROPIC_API_KEY") is not None else ""
@@ -65,6 +66,7 @@ with st.sidebar:
             "Introduce your Anthropic API Key (https://console.anthropic.com/)", 
             value=default_anthropic_api_key, 
             type="password",
+            key="anthropic_api_key",
         )
 
 # --- Main Content ---
@@ -125,12 +127,14 @@ else:
     model_provider = st.session_state.model.split("/")[0]
     if model_provider == "openai":
         llm_stream = ChatOpenAI(
+            api_key=openai_api_key,
             model_name=st.session_state.model.split("/")[-1],
             temperature=0.3,
             streaming=True,
         )
     elif model_provider == "anthropic":
         llm_stream = ChatAnthropic(
+            api_key=anthropic_api_key,
             model=st.session_state.model.split("/")[-1],
             temperature=0.3,
             streaming=True,
