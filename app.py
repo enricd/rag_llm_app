@@ -1,11 +1,14 @@
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
 import streamlit as st
 import os
 import dotenv
 import uuid
+
+# check if it's linux so it works on Streamlit Cloud
+if os.name == 'posix':
+
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
@@ -72,6 +75,7 @@ with st.sidebar:
             type="password",
             key="anthropic_api_key",
         )
+
 
 # --- Main Content ---
 # Checking if the user has introduced the OpenAI API Key, if not, a warning is displayed
@@ -163,5 +167,12 @@ else:
                 st.write_stream(stream_llm_response(llm_stream, messages))
             else:
                 st.write_stream(stream_llm_rag_response(llm_stream, messages))
+
+
+with st.sidebar:
+    st.divider()
+    st.video("https://youtu.be/abMwFViFFhI")
+    st.write("📋[Medium Blog](https://medium.com/@enricdomingo)")
+    st.write("📋[GitHub Repo](https://github.com/enricd/rag_llm_app)")
 
     
