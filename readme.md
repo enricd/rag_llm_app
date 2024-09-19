@@ -5,9 +5,9 @@ RAG web application using Python, Streamlit and LangChain, so you can chat with 
 To run it locally:
 
 ```bash
-$ git clone
+$ git clone <this-repo-url>
 
-$ cd
+$ cd <this-repo-folder>
 
 $ python -m venv venv
 
@@ -18,5 +18,5 @@ $ pip install -r requirements.txt
 $ streamlit run app.py
 ```
 
-Video: https://youtu.be/abMwFViFFhI
-Blog: https://medium.com/@enricdomingo
+Video: https://youtu.be/abMwFViFFhI  
+Blog: https://medium.com/@enricdomingo  
