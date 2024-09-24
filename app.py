@@ -9,7 +9,7 @@ if os.name == 'posix':
     import sys
     sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-from langchain_openai import ChatOpenAI, AzureChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain.schema import HumanMessage, AIMessage
 
@@ -22,15 +22,12 @@ from rag_methods import (
 
 dotenv.load_dotenv()
 
-if "AZ_OPENAI_API_KEY" not in os.environ:
-    MODELS = [
-        # "openai/o1-mini",
-        "openai/gpt-4o",
-        "openai/gpt-4o-mini",
-        "anthropic/claude-3-5-sonnet-20240620",
-    ]
-else:
-    MODELS = ["azure-openai/gpt-4o"]
+MODELS = [
+    # "openai/o1-mini",
+    "openai/gpt-4o",
+    "openai/gpt-4o-mini",
+    "anthropic/claude-3-5-sonnet-20240620",
+]
 
 
 st.set_page_config(
@@ -61,36 +58,30 @@ if "messages" not in st.session_state:
 
 # --- Side Bar LLM API Tokens ---
 with st.sidebar:
-    if "AZ_OPENAI_API_KEY" not in os.environ:
-        default_openai_api_key = os.getenv("OPENAI_API_KEY") if os.getenv("OPENAI_API_KEY") is not None else ""  # only for development environment, otherwise it should return None
-        with st.popover("🔐 OpenAI"):
-            openai_api_key = st.text_input(
-                "Introduce your OpenAI API Key (https://platform.openai.com/)", 
-                value=default_openai_api_key, 
-                type="password",
-                key="openai_api_key",
-            )
+    default_openai_api_key = os.getenv("OPENAI_API_KEY") if os.getenv("OPENAI_API_KEY") is not None else ""  # only for development environment, otherwise it should return None
+    with st.popover("🔐 OpenAI"):
+        openai_api_key = st.text_input(
+            "Introduce your OpenAI API Key (https://platform.openai.com/)", 
+            value=default_openai_api_key, 
+            type="password",
+            key="openai_api_key",
+        )
 
-        default_anthropic_api_key = os.getenv("ANTHROPIC_API_KEY") if os.getenv("ANTHROPIC_API_KEY") is not None else ""
-        with st.popover("🔐 Anthropic"):
-            anthropic_api_key = st.text_input(
-                "Introduce your Anthropic API Key (https://console.anthropic.com/)", 
-                value=default_anthropic_api_key, 
-                type="password",
-                key="anthropic_api_key",
-            )
-    
-    else:
-        openai_api_key, anthropic_api_key = None, None
-        az_openai_api_key = os.getenv("AZ_OPENAI_API_KEY")
-        st.session_state.az_openai_api_key = az_openai_api_key
+    default_anthropic_api_key = os.getenv("ANTHROPIC_API_KEY") if os.getenv("ANTHROPIC_API_KEY") is not None else ""
+    with st.popover("🔐 Anthropic"):
+        anthropic_api_key = st.text_input(
+            "Introduce your Anthropic API Key (https://console.anthropic.com/)", 
+            value=default_anthropic_api_key, 
+            type="password",
+            key="anthropic_api_key",
+        )
 
 
 # --- Main Content ---
 # Checking if the user has introduced the OpenAI API Key, if not, a warning is displayed
 missing_openai = openai_api_key == "" or openai_api_key is None or "sk-" not in openai_api_key
 missing_anthropic = anthropic_api_key == "" or anthropic_api_key is None
-if missing_openai and missing_anthropic and ("AZ_OPENAI_API_KEY" not in os.environ):
+if missing_openai and missing_anthropic:
     st.write("#")
     st.warning("⬅️ Please introduce an API Key to continue...")
 
@@ -98,18 +89,9 @@ else:
     # Sidebar
     with st.sidebar:
         st.divider()
-        models = []
-        for model in MODELS:
-            if "openai" in model and not missing_openai:
-                models.append(model)
-            elif "anthropic" in model and not missing_anthropic:
-                models.append(model)
-            elif "azure-openai" in model:
-                models.append(model)
-                
         st.selectbox(
             "🤖 Select a Model", 
-            options=models,
+            [model for model in MODELS if ("openai" in model and not missing_openai) or ("anthropic" in model and not missing_anthropic)],
             key="model",
         )
 
@@ -162,16 +144,6 @@ else:
         llm_stream = ChatAnthropic(
             api_key=anthropic_api_key,
             model=st.session_state.model.split("/")[-1],
-            temperature=0.3,
-            streaming=True,
-        )
-    elif model_provider == "azure-openai":
-        llm_stream = AzureChatOpenAI(
-            azure_endpoint=os.getenv("AZ_OPENAI_ENDPOINT"),
-            openai_api_version="2024-02-15-preview",
-            model_name="gpt-4o",
-            openai_api_key=os.getenv("AZ_OPENAI_API_KEY"),
-            openai_api_type="azure",
             temperature=0.3,
             streaming=True,
         )
