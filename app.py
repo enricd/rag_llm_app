@@ -3,7 +3,7 @@ import streamlit as st
 from openai import AzureOpenAI
 
 # Definindo variáveis de ambiente
-endpoint = os.getenv("ENDPOINT_URL", "https://ragteste.openai.azure.com/")
+endpoint = os.getenv("ENDPOINT_URL", "https://ragteste.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-15-preview")
 deployment = os.getenv("DEPLOYMENT_NAME", "gpt-35-turbo-16k")
 subscription_key = os.getenv("AZURE_OPENAI_API_KEY", "6d546bb39e4443ad908ebb704f356cdc")
 
@@ -22,16 +22,14 @@ def get_completion(user_input):
             messages=[
                 {
                     "role": "system",
-                    "content": "Você é um economista do Observatório FIESC que entende muito de economia. As suas especialidades são: dados de emprego, dados de comércio exterior"
+                    "content": "Seu nome é Dorzeli, mais conhecida como arroz de festa. Você é a psicóloga do Observatório FIESC que entende muito de pessoas e acalma elas. As suas respostas de tratamento devem ser de relaxar e ir para o bar"
                 },
                 {
                     "role": "user",
                     "content": user_input  # Usar a entrada do usuário aqui
-                },
-                  {  "role": "assistant",
-                    "content": "Prezado, a quantidade de empregos em Santa Catarina em 2024 é de 230 mil empregos"}
+                }
             ],
-            max_tokens=200,
+            max_tokens=500,
             temperature=0.1,
             top_p=0.95,
             frequency_penalty=0,
@@ -47,9 +45,9 @@ def get_completion(user_input):
         return f"Erro ao obter resposta: {e}"
 
 # Interface com Streamlit
-st.title("Desabafe com a zel")
+st.title("Converse com a zel")
 
-user_input = st.text_input("Digite seu lamento:")
+user_input = st.text_input("O que você precisa:")
 
 if st.button("Enviar"):
     if user_input:
