@@ -4,7 +4,7 @@ from openai import AzureOpenAI
 
 # Definindo variáveis de ambiente
 endpoint = os.getenv("ENDPOINT_URL", "https://ragteste.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-15-preview")
-deployment = os.getenv("DEPLOYMENT_NAME", "gpt-35-turbo-16k")
+deployment = os.getenv("DEPLOYMENT_NAME", "gpt-40")
 subscription_key = os.getenv("AZURE_OPENAI_API_KEY", "6d546bb39e4443ad908ebb704f356cdc")
 
 # Inicializando o cliente Azure OpenAI com autenticação baseada em chave
